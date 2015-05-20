@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/WebstormProjects/Web Technology/.idea/Web Technology.iml" filepath="$USER_HOME$/WebstormProjects/Web Technology/.idea/Web Technology.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Web Technology.iml" filepath="$PROJECT_DIR$/.idea/Web Technology.iml" />
     </modules>
   </component>
 </project>
