@@ -4,11 +4,29 @@ block content
   h1= title
   p Welcome to #{title}
   form(name="userlogin", action="/",method="GET")
-    input(type="text",name="query")
+    p search :
+      input(type="text",name="query")
+    p want to add location?
+      input(type="checkbox",id="check", onclick="doAlert()")
+    input(type="hidden",name="geoloc",id="geoloc")
+    br
     input(type="submit",value="submit")
-
   ul
     for tweet in tweets
       li= tweet
-    else
-      li Tweet not found!
+
+  script(type='text/javascript').
+    function doAlert() {
+      var inputField = document.getElementById("geoloc");
+      var check = document.getElementById("check");
+      console.log("clicked");
+      if (check.checked) {
+        inputField.setAttribute("type","password");
+        window.alert("Checked");
+      } else {
+        inputField.setAttribute("type", "hidden");
+        window.alert("Unchecked");
+      }
+
+    }
+
