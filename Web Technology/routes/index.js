@@ -16,30 +16,62 @@ var client = new twit({
 /* GET home page. */
 router.get('/', function(req, res, next) {
     // array of tweet result
+    var totalTweets = 1;
     var tweets = [];
     var twitQuery = req.query.query;
+    var geoloc = req.query.geoloc;
     if (twitQuery == null) {
         res.render('index', {title: 'Search Twitter', "tweets": []});
     } else {
-        client.get("search/tweets", {q: twitQuery, count: 0},
-            function (err, data) {
-                for (var count in data.statuses) {
-                    var tweet = data.statuses[count];
-                    // add each tweet to array
-                    tweets.push(tweet.text);
-                    console.log(count + ": " + tweets[count]);
-                    //console.log('on: ' + tweet.created_at + ' : @'
-                    //    + tweet.user.screen_name + ' : '
-                    //    + tweet.text+'\n\n');
-                }
-                res.render('index', _.extend({ title: 'Search Twitter'},{"tweets": tweets}));
-            });
+        if (geoloc != null) {
+            // process geolocation string
+            console.log("With location");
+            geoloc = geoloc.replace(/\s+/g, "");
+            geoloc = geoloc + ",1mi";
+            client.get("search/tweets", {q: twitQuery, count: totalTweets, geocode: geoloc, include_entities: true},
+                function (err, data) {
+
+                    for (var i in data.statuses) {
+                        var tweet = data.statuses[i];
+                        // add each tweet to array
+                        console.log(tweet);
+                        tweets.push(tweet);
+                    }
+                    res.render('index', _.extend({ title: 'Search Twitter'},{"tweets": tweets}));
+                });
+        } else {
+            client.get("search/tweets", {q: twitQuery, count: totalTweets, include_entities: true},
+                function (err, data) {
+                    for (var i in data.statuses) {
+                        var tweet = data.statuses[i];
+                        console.log(tweet.retweet_count);
+                        console.log(tweet.id_str);
+                        client.get("statuses/show/:id",{id: tweet.id_str}, getRetweets);
+                        // add each tweet to array
+                        //console.log(retweets);
+                        tweets.push(tweet);
+                    }
+                    res.render('index', _.extend({ title: 'Search Twitter'},{"tweets": tweets}));
+                });
+        }
+
     }
 });
 
+
+
+// get retweet information
+function getRetweets(err, data, response) {
+    console.log("Error : ")
+    console.log(err);
+    console.log("Data : ");
+    console.log(data);
+}
+
 /* GET hello world page. */
-router.get('/helloworld', function(req, res, next) {
-  res.render('helloworld', { title: 'Hello, World!' });
+router.get('/user', function(req, res, next) {
+    console.log("called.")
+    res.render('user', { title: 'Search Twitter User' });
 });
 
 app.get("/", function(req, res) {

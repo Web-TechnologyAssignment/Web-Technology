@@ -6,26 +6,34 @@ block content
   form(name="userlogin", action="/",method="GET")
     p search :
       input(type="text",name="query")
+      input(type="submit",value="submit")
     p want to add location?
-      input(type="checkbox",id="check", onclick="doAlert()")
-    input(type="hidden",name="geoloc",id="geoloc")
+      input(type="checkbox",id="check", onclick="addText()")
+    input(type="hidden",name="geoloc",id="geoloc",disabled="true")
+    p
     br
-    input(type="submit",value="submit")
-  ul
+
+  ol
     for tweet in tweets
-      li= tweet
+      div(style="display: block")
+        p
+          img(src=tweet.user.profile_image_url)
+          =tweet.created_at
+          br
+          =tweet.text
+
 
   script(type='text/javascript').
-    function doAlert() {
+    function addText() {
       var inputField = document.getElementById("geoloc");
       var check = document.getElementById("check");
       console.log("clicked");
       if (check.checked) {
-        inputField.setAttribute("type","password");
-        window.alert("Checked");
+        inputField.setAttribute("type","text");
+        inputField.removeAttribute("disabled");
       } else {
         inputField.setAttribute("type", "hidden");
-        window.alert("Unchecked");
+        inputField.setAttribute("disabled","true");
       }
 
     }
