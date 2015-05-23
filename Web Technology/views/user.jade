@@ -4,11 +4,18 @@ block content
   h1= title
   p Welcome to  #{title}
   form(name="userlogin", action="/user",method="GET")
-    p search :
-      input(type="text",name="query")
-      input(type="submit",value="submit")
-    p want to add location?
-      input(type="checkbox",id="check", onclick="addText()")
-    input(type="hidden",name="geoloc",id="geoloc",disabled="true")
     p
+      |Screen names :
+      = " "
+      input(type="text",name="screen_names")
+    p
+      |How many keywords?
+      = " "
+      input(type="text",name="num_of_keywords")
+    p
+      |How many days?
+      = " "
+      input(type="text",name="num_of_days")
+      p (5 days default)
+    input(type="submit",value="submit")
     br

@@ -12,7 +12,6 @@ var client = new twit({
   access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
     // array of tweet result
@@ -58,8 +57,6 @@ router.get('/', function(req, res, next) {
     }
 });
 
-
-
 // get retweet information
 function getRetweets(err, data, response) {
     console.log("Error : ")
@@ -68,13 +65,4 @@ function getRetweets(err, data, response) {
     console.log(data);
 }
 
-/* GET hello world page. */
-router.get('/user', function(req, res, next) {
-    console.log("called.")
-    res.render('user', { title: 'Search Twitter User' });
-});
-
-app.get("/", function(req, res) {
-  console.log("Have a request");
-});
 module.exports = router;

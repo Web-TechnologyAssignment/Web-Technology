@@ -12,8 +12,37 @@ var client = new twit({
 
 /* GET users listing. */
 router.get('/user', function(req, res, next) {
-  console.log("Caught query.");
-  //res.send('respond with a resource');
+  var num_of_days = req.query.num_of_days;
+  var num_of_keywords = req.query.num_of_keywords;
+  var screen_names = req.query.screen_names;
+  screen_names = screen_names.split(",");
+  console.log(screen_names);
+
+  var day = new Date();
+  console.log(day);
+  day.setDate(day.getDate() - num_of_days);
+  console.log(day);
+  client.get("search/tweets",{q: "from:" + screen_names[0] + " since:" + day.getFullYear() + "-0"
+  + (day.getMonth() + 1) + "-" + day.getDate()}, statTweets);
+
+  console.log("search/tweets",{q: "from:" + screen_names[0] + " since:" + day.getFullYear() + "-"
+  + (day.getMonth() + 1) + "-" + day.getDate(), result_type: "recent"});
+  console.log(day);
+  res.render('user', { title: 'Search Twitter User'});
 });
+
+function statTweets(err, data, response) {
+  console.log(data);
+}
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
