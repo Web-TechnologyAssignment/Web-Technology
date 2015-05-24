@@ -1,34 +1,34 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to  #{title}
-  form(name="userlogin", action="/user",method="GET")
-    p
-      |Screen names :
-      = " "
-      input(type="text",name="screen_names")
-    p
-      |How many keywords?
-      = " "
-      input(type="text",name="num_of_keywords")
-    p
-      |How many days?
-      = " "
-      input(type="text",name="num_of_days")
-      p (5 days default)
-    input(type="submit",value="submit")
-    br
+    h1= title
+    p Welcome to  #{title}
+    form(name="userlogin", action="/user",method="GET")
+        p
+            | Screen names :
+            = " "
+            input(type="text",name="screen_names")
+        p
+            | How many keywords?
+            = " "
+            input(type="text",name="num_of_keywords")
+        p
+            | How many days?
+            = " "
+            input(type="text",name="num_of_days")
+            p (5 days default)
+        input(type="submit",value="submit")
+        br
 
-    table(style="width:100%",border=1)
-      tr
-        td
-        for user in stats
-          td= user.username
-        td Total
-      for word in stats.total
-       tr
-          td= word.key
-          for user in stats
-            td= user.words[word.key]
-          td= word.total
+        table(style="width:100%",border=1)
+            tr
+                td
+                for user in stats
+                    td= user.username
+                td Total
+            for word in stats.total
+                tr
+                    td= word.key
+                    for user in stats
+                        td= user.words[word.key]
+                    td= word.total
