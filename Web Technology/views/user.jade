@@ -19,3 +19,16 @@ block content
       p (5 days default)
     input(type="submit",value="submit")
     br
+
+    table(style="width:100%",border=1)
+      tr
+        td
+        for user in stats
+          td= user.username
+        td Total
+      for word in stats.total
+       tr
+          td= word.key
+          for user in stats
+            td= user.words[word.key]
+          td= word.total

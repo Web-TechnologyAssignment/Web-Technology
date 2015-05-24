@@ -20,19 +20,16 @@ count.countKeywords = function (text,param) {
 };
 
 count.commonKeywords = function(param, num) {
-    var dictionary = [];    // json to array
+    console.log(param);
     var common_words = [];
-    var users = [];
-    var result = {};
-    for (var user in param) {
-        dictionary.push(param[user]);
-        users.push(user);
+    if (param.length <= 1) {
+        // do something else
     }
-    for (var key in dictionary[0]) {
+    for (var key in param[0].words) {
         var isCommon = true;
-        var sum = 0;
-        for (var i = 1; i < dictionary.length; i++) {
-            var temp = dictionary[i][key];
+        var sum = param[0].words[key];
+        for (var i = 1; i < param.length; i++) {
+            var temp = param[i].words[key];
             if (temp == null) {
                 isCommon = false;
                 break;
@@ -47,12 +44,14 @@ count.commonKeywords = function(param, num) {
     common_words.sort(function (a, b) {
         return b.total - a.total;
     });
-    console.log(common_words);
-    // return result
-    var counter = 0;
-    for (var i = 0; i < num ; i++) {
 
+    // find the top num's
+    if (common_words.length >= num) {
+        common_words = common_words.slice(0,num);
     }
+    // return result
+    param["total"] = common_words;
+    return param;
 };
 
 module.exports = count;

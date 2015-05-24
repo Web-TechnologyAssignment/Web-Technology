@@ -10,7 +10,7 @@ var client = new twit({
     access_token: '3288379547-Em8DIkNc1mmoKQqoDUAs8mCxahQ6jMNduAxu5Go',
     access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
-var map = {};
+var map = [];
 var counter = 0;
 var max_length = 0;
 /* GET users listing. */
@@ -27,7 +27,7 @@ router.get('/user', function(req, res, next) {
         screen_names = screen_names.split(",");
         day.setDate(day.getDate() - num_of_days);
 
-        map = {};
+        map = [];
         counter = 0;
         max_length = screen_names.length;
         for (var name_index in screen_names) {
@@ -37,18 +37,17 @@ router.get('/user', function(req, res, next) {
                 console.log("start: " + counter);
                 if (data.statuses.length != 0) {
                     var username = data.statuses[0].user.name;
-                    console.log(username);
                     var word_map = {};
                     for (var index in data.statuses) {
                         var text = data.statuses[index].text;
                         word_map = count.countKeywords(text, word_map);
                     }
-                    map[username] = word_map;
+                    map.push({ username: username,words: word_map});
                 }
                 counter++;
                 if (counter == max_length) {
-                    var temp = count.commonKeywords(map);
-                    res.render('user', _.extend(temp,{title: 'Search Twitter User with new data'}));
+                    var temp = _.extend({title: 'Search Twitter User with new data'},{stats: count.commonKeywords(map, num_of_keywords)});
+                    res.render('user', temp);
                 }
             });
             console.log(query);
