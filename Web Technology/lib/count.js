@@ -20,7 +20,6 @@ count.countKeywords = function (text,param) {
 };
 
 count.commonKeywords = function(param, num) {
-    console.log(param);
     var common_words = [];
     if (param.length <= 1) {
         // do something else

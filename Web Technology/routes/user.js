@@ -47,6 +47,7 @@ router.get('/user', function(req, res, next) {
                 counter++;
                 if (counter == max_length) {
                     var temp = _.extend({title: 'Search Twitter User with new data'},{stats: count.commonKeywords(map, num_of_keywords)});
+                    console.log(temp.stats);
                     res.render('user', temp);
                 }
             });
