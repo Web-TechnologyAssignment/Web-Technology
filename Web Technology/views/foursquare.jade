@@ -4,10 +4,7 @@ block content
     p Welcome to  #{title}
     form(name="search", action="/foursquare",method="GET")
         p
-            | Search by
-            select(name="search")
-                option(value="username") Username
-                option(value="tweetname") Tweeter Name
+            | Search by Username
             = " "
             input(type="text",name="name")
         p

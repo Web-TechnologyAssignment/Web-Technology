@@ -15,7 +15,7 @@ var client = new twit({
 /* GET home page. */
 router.get('/', function(req, res, next) {
     // array of tweet result
-    var totalTweets = 1;
+    var totalTweets = 10;
     var tweets = [];
     var twitQuery = req.query.query;
     var geoloc = req.query.geoloc;
