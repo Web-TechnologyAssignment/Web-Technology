@@ -4,4 +4,15 @@ html
         title= title
         link(rel='stylesheet', href='/stylesheets/style.css')
     body
+        div.menubar
+            li
+                a(href="./")
+                    |Search Tweets
+            li
+                a(href="./user")
+                    |Search Twitter User
+            li
+                a(href="./foursquare")
+                    |Search Foursquare Venue
+
         block content

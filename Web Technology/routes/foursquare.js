@@ -8,19 +8,81 @@ var client = new twit({
     access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
 var util = require("../lib/util");
+var foursquare = require("../lib/foursquare");
 
 
-
+var counter;
+var max_length;
+var venues;
 router.get('/foursquare', function(req, res, next) {
     var query = req.query;
     if (query.name == null || query.name.length == 0) {
         console.log(query.name);
-        res.render('foursquare', {title: 'Search Four Square!'});
+        res.render('foursquare', {title: 'Search FourSquare!'});
     } else {
-        client.get("search/tweets", { q: "from:zumrantk swarmapp", count: 1}, function(err, data) {
-        console.log(data.statuses);
+        var day = new Date();
+        day.setDate(day.getDate() - query.day);
+        var q = {q: "from:" + query.name + " swarmapp" + " since:" + day.getFullYear() + "-0"
+        + (day.getMonth() + 1) + "-" + day.getDate() , count: 15};
+        console.log(q);
+        client.get("search/tweets", q, function (err, data) {
+            counter = 0;
+            max_length = data.statuses.length;
+            venues = [];
+            if (data.statuses.length != 0) {
+                for (var index in data.statuses) {
+                    var tweet = data.statuses[index];
+                    var url = util.getURL(tweet.text);
+                    util.expandURL(url, function (checkin) {
+                        foursquare.get("checkins/resolve", {shortId: checkin}, function (error, response, body) {
+                            if (!error && response.statusCode == 200) {
+                                console.log("start: ");
+                                var data = JSON.parse(body);
+                                var venue_info = data.response.checkin.venue;
+                                foursquare.get("venues/" + venue_info.id, {}, function (err, resp, value) {
+                                    value = JSON.parse(value);
+                                    var venue = value.response.venue;
+                                    var loc = venue.location;
+                                    var photos = venue.photos.groups;
+                                    var categories = "";
+                                    for (var i in venue.categories) {
+                                        categories += venue.categories[i].name;
+                                    }
+                                    if (photos.length != null && photos.length != 0) {
+                                        photos = photos[0].items;
+                                        if (photos.length != null && photos.length != 0) {
+                                            photos = photos[0].prefix + "100" + photos[0].suffix;
+                                            venues.push({ name: venue.name,
+                                                loc: {lat: loc.lat, lng: loc.lng},
+                                                photo: photos,
+                                                categories: categories,
+                                                address: loc.formattedAddress.toString(),
+                                                url: venue.canonicalUrl
+                                            });
+                                        } else {
+                                            console.log("NO PHOTO");
+                                        }
+                                    } else {
+                                        console.log("NO PHOTO");
+                                    }
+                                    counter++;
+                                    if (counter == max_length) {
+                                        console.log(venues);
+                                        res.render('foursquare', {title: 'Search FourSquare!', venues: venues});
+                                    }
+                                });
+                            } else {
+                                res.render('foursquare', {title: 'Search FourSquare!', error: "No result"});
+                            }
+                        });
+                        console.log(checkin);
+                    });
+                }
+            } else {
+                res.render('foursquare', {title: 'Search FourSquare!', error: "No result"});
+            }
         });
-        res.render('foursquare', {title: 'Search Four Square!'});
+
 
     }
 

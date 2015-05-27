@@ -8,25 +8,30 @@ var headers = {
 
 var config = {
     id : 'PV0EB3H5TB4GYSUKY5QXAZIXVQYTNJ42FUUVS1TSHAIQSNS3',
-    secret : 'BNAPIJU4L5NVQPBNA4OI40KZ1OZSWD5YT0UZLCHVCTWCQ4JV'
+    secret : 'BNAPIJU4L5NVQPBNA4OI40KZ1OZSWD5YT0UZLCHVCTWCQ4JV',
+    access_token : "LSAKYLRWX33ZPTQIOQZOXCLMPEDB2EOMZ3E14JD30NU2DIUB"
 }
 
 // configure the request
 var options = {
-    url: 'https://api.foursquare.com/v2',
+    url: 'https://api.foursquare.com/v2/',
     method: "GET",
     headers: headers,
     qs: {
-        client_id: config.id,
-        client_secret: config.secret
+        oauth_token: config.access_token,
+        v: 20150527
     }
 }
 
 foursquare.get = function(path, params, callback) {
-    console.log("start: ");
-    var a = {city: "kengdie", life: "bad"};
-    var b = {city: "kengdie", life: "bad"};
-    console.log();
+    options.url = 'https://api.foursquare.com/v2/' + path;
+    if (params.shortId) {
+        options.qs['shortId'] = params.shortId;
+    }
+
+    request(options, function (error, response, body){
+        callback(error, response, body);
+    });
 };
 
 module.exports = foursquare;
