@@ -1,0 +1,19 @@
+extends layout
+block content
+   h1= title
+   p Welcome to  #{title}
+   form(name="search", action="/visitor",method="GET")
+      p
+         | Search
+         = " "
+         select(name="select")
+            option(value="location") Location
+            option(value="coordinates") Coordinates
+         = " "
+         input(type="text",name="loc")
+      p
+         | How many days?
+         = " "
+         input(type="text",name="day")
+      input(type="submit",value="submit")
+   br

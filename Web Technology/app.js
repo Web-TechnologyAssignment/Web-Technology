@@ -9,6 +9,7 @@ var index_routes = require('./routes/index');
 var user_routes = require('./routes/user');
 var demo_routes = require('./routes/demo');
 var foursquare_routes = require('./routes/foursquare');
+var visitor_routes = require('./routes/visitor');
 var app = express();
 
 // view engine setup
@@ -27,6 +28,7 @@ app.use('/', index_routes);
 app.use('/', user_routes);
 app.use('/', demo_routes);
 app.use('/', foursquare_routes);
+app.use('/', visitor_routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
