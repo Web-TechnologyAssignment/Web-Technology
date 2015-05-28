@@ -8,7 +8,9 @@ var client = new twit({
     access_token: '3288379547-Em8DIkNc1mmoKQqoDUAs8mCxahQ6jMNduAxu5Go',
     access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
-
+var util = require('../lib/util');
+var foursquare = require("../lib/foursquare");
+var db = require("../lib/db");
 var day;
 router.get('/visitor', function(req, res, next) {
     var query = req.query;
@@ -21,10 +23,17 @@ router.get('/visitor', function(req, res, next) {
 
         var q = {count: 5, q: "since:" + day.getFullYear() + "-0" + (day.getMonth() + 1) + "-" +
         day.getDate() + " swarmapp " + loc};
-        console.log(q);
         var users = [];
+        var venues = {};
+        venues['users'] = {};
+        venues['checkin'] = {};
+        venues['venues'] = {};
+        var counter = 0;
+        var max_length = 0;
         client.get("search/tweets",q , function(err, data) {
+            max_length = data.statuses.length;
             for (var index in data.statuses) {
+                var url = util.getURL(data.statuses[index].text);
                 var user = data.statuses[index].user;
                 users.push({
                     id_str: user.id_str,
@@ -34,8 +43,23 @@ router.get('/visitor', function(req, res, next) {
                     photo: user.profile_image_url,
                     text: user.description
                 });
+                venues['users'][url] = {user: users[index]};
+                util.expandURL(url, function (checkin, shortUrl) {
+                    venues['checkin'][checkin] = {shortUrl :shortUrl};
+                    foursquare.get("checkins/resolve", {shortId: checkin}, function (error, response, body, params) {
+                        if (!error && response.statusCode == 200) {
+                            var data = JSON.parse(body);
+                            var venue_info = data.response.checkin.venue;
+                            venues['venues'][params.shortId] = venue_info;
+                        }
+                        counter++;
+                        if (counter == max_length) {
+                            console.log("did");
+                            db.storeVenuesWithUser(venues);
+                        }
+                    });
+                });
             }
-            //console.log(users);
             res.render('visitor', {title: 'Search Venue Visitor', users: users});
         });
     } else {

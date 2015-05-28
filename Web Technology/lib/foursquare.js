@@ -30,7 +30,7 @@ foursquare.get = function(path, params, callback) {
     }
 
     request(options, function (error, response, body){
-        callback(error, response, body);
+        callback(error, response, body, params);
     });
 };
 

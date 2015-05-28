@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var count = require("../lib/count");
 var _ = require("underscore");
+var db = require("../lib/db");
 // create twit client
 var twit = require("twit");
 var client = new twit({
@@ -11,6 +12,7 @@ var client = new twit({
     access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
 var map = [];
+var users;
 var counter = 0;
 var max_length = 0;
 /* GET users listing. */
@@ -36,12 +38,23 @@ router.get('/user', function(req, res, next) {
             client.get("search/tweets", query, function (err, data) {
                 console.log("start: " + counter);
                 if (data.statuses.length != 0) {
+                    users = [];
                     var username = data.statuses[0].user.name;
                     var word_map = {};
                     for (var index in data.statuses) {
+                        var user = data.statuses[index].user;
                         var text = data.statuses[index].text;
                         word_map = count.countKeywords(text, word_map);
+                        users.push({
+                            id_str: user.id_str,
+                            name: user.name,
+                            screen_name: user.screen_name,
+                            location: user.location,
+                            photo: user.profile_image_url,
+                            text: user.description
+                        });
                     }
+                    db.storeUsers(users);
                     map.push({ username: username,words: word_map});
                 }
                 counter++;

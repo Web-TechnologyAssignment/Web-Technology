@@ -9,11 +9,12 @@ var client = new twit({
 });
 var util = require("../lib/util");
 var foursquare = require("../lib/foursquare");
-
+var db = require("../lib/db");
 
 var counter;
 var max_length;
 var venues;
+var user;
 router.get('/foursquare', function(req, res, next) {
     var query = req.query;
     if (query.name == null || query.name.length == 0) {
@@ -32,11 +33,11 @@ router.get('/foursquare', function(req, res, next) {
             if (data.statuses.length != 0) {
                 for (var index in data.statuses) {
                     var tweet = data.statuses[index];
+                    var user = tweet.user;
                     var url = util.getURL(tweet.text);
                     util.expandURL(url, function (checkin) {
                         foursquare.get("checkins/resolve", {shortId: checkin}, function (error, response, body) {
                             if (!error && response.statusCode == 200) {
-                                console.log("start: ");
                                 var data = JSON.parse(body);
                                 var venue_info = data.response.checkin.venue;
                                 foursquare.get("venues/" + venue_info.id, {}, function (err, resp, value) {
@@ -50,24 +51,21 @@ router.get('/foursquare', function(req, res, next) {
                                     }
                                     if (photos.length != null && photos.length != 0) {
                                         photos = photos[0].items;
-                                        if (photos.length != null && photos.length != 0) {
-                                            photos = photos[0].prefix + "100" + photos[0].suffix;
-                                            venues.push({ name: venue.name,
-                                                loc: {lat: loc.lat, lng: loc.lng},
-                                                photo: photos,
-                                                categories: categories,
-                                                address: loc.formattedAddress.toString(),
-                                                url: venue.canonicalUrl
-                                            });
-                                        } else {
-                                            console.log("NO PHOTO");
-                                        }
+                                        photos = photos[0].prefix + "100" + photos[0].suffix;
                                     } else {
-                                        console.log("NO PHOTO");
+                                        photos = null;
                                     }
+                                    venues.push({ name: venue.name,
+                                        venueId: venue.id,
+                                        loc: {lat: loc.lat, lng: loc.lng},
+                                        photo: photos,
+                                        categories: categories,
+                                        address: loc.formattedAddress.toString(),
+                                        url: venue.canonicalUrl
+                                    });
                                     counter++;
                                     if (counter == max_length) {
-                                        console.log(venues);
+                                        db.storeVenues(venues, user);
                                         res.render('foursquare', {title: 'Search FourSquare!', venues: venues});
                                     }
                                 });

@@ -13,7 +13,7 @@ util.expandURL = function(url, callback) {
         console.log(url);
         var href = response.request.href;
         var checkin = href.substring(href.lastIndexOf("/") + 1);
-        callback(checkin);
+        callback(checkin, url);
     });
 
 };
