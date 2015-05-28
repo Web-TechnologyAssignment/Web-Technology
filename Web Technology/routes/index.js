@@ -11,7 +11,9 @@ var client = new twit({
   access_token: '3288379547-Em8DIkNc1mmoKQqoDUAs8mCxahQ6jMNduAxu5Go',
   access_token_secret: 'gHzlapAhUjuzCgpAaI8t5oQdzJTIwy7yjP9IowJClkgFB'
 });
+var db = require('../lib/db');
 
+var users;
 /* GET home page. */
 router.get('/', function(req, res, next) {
     // array of tweet result
@@ -29,27 +31,45 @@ router.get('/', function(req, res, next) {
             geoloc = geoloc + ",1mi";
             client.get("search/tweets", {q: twitQuery, count: totalTweets, geocode: geoloc, include_entities: true},
                 function (err, data) {
-
+                    users = [];
                     for (var i in data.statuses) {
                         var tweet = data.statuses[i];
+                        var user = tweet.user;
+                        users.push({
+                            id_str: user.id_str,
+                            name: user.name,
+                            screen_name: user.screen_name,
+                            location: user.location,
+                            photo: user.profile_image_url,
+                            text: user.description
+                        });
+
                         // add each tweet to array
-                        console.log(tweet);
                         tweets.push(tweet);
                     }
+                    db.storeUsers(users);
                     res.render('index', _.extend({ title: 'Search Twitter'},{"tweets": tweets}));
                 });
         } else {
             client.get("search/tweets", {q: twitQuery, count: totalTweets, include_entities: true},
                 function (err, data) {
+                    users = [];
                     for (var i in data.statuses) {
                         var tweet = data.statuses[i];
-                        console.log(tweet.retweet_count);
-                        console.log(tweet.id_str);
-                        client.get("statuses/show/:id",{id: tweet.id_str}, getRetweets);
+                        var user = tweet.user;
+                        users.push({
+                            id_str: user.id_str,
+                            name: user.name,
+                            screen_name: user.screen_name,
+                            location: user.location,
+                            photo: user.profile_image_url,
+                            text: user.description
+                        });
+
                         // add each tweet to array
-                        //console.log(retweets);
                         tweets.push(tweet);
                     }
+                    db.storeUsers(users);
                     res.render('index', _.extend({ title: 'Search Twitter'},{"tweets": tweets}));
                 });
         }

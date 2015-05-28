@@ -31,10 +31,11 @@ router.get('/visitor', function(req, res, next) {
                     name: user.name,
                     screen_name: user.screen_name,
                     location: user.location,
-                    photo: user.profile_image_url
+                    photo: user.profile_image_url,
+                    text: user.description
                 });
             }
-            console.log(users);
+            //console.log(users);
             res.render('visitor', {title: 'Search Venue Visitor', users: users});
         });
     } else {

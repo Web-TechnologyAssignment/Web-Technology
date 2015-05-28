@@ -17,3 +17,20 @@ block content
          input(type="text",name="day")
       input(type="submit",value="submit")
    br
+
+   if users
+      table(style="width:100%",border=1)
+         tr
+            td
+            td name
+            td location
+            td description
+         for user in users
+            tr
+               td
+                  img(src=user.photo,style="width:100px;height:100px")
+               td
+                  = "@"
+                  = user.name
+               td= user.location
+               td= user.text
