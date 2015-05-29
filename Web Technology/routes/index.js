@@ -17,7 +17,7 @@ var users;
 /* GET home page. */
 router.get('/', function(req, res, next) {
     // array of tweet result
-    var totalTweets = 10;
+    var totalTweets = 100;
     var tweets = [];
     var twitQuery = req.query.query;
     var geoloc = req.query.geoloc;
@@ -28,13 +28,16 @@ router.get('/', function(req, res, next) {
         if (geoloc != null) {
             // process geolocation string
             geoloc = geoloc.replace(/\s+/g, "");
+            // set radius to 1mi
             geoloc = geoloc + ",1mi";
             q = {q: twitQuery, count: totalTweets, geocode: geoloc, include_entities: true};
         } else {
             q = {q: twitQuery, count: totalTweets, include_entities: true};
         }
+        // use twitter api search/tweets
         client.get("search/tweets", q, function (err, data) {
             users = [];
+            // handle err
             var err_msg = null;
             if (err) {
                 err_msg = err.message;

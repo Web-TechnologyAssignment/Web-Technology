@@ -33,7 +33,7 @@ router.get('/user', function(req, res, next) {
         max_length = screen_names.length;
         for (var name_index in screen_names) {
             var q = {q: "from:" + screen_names[name_index] + " since:" + day.getFullYear() + "-0"
-            + (day.getMonth() + 1) + "-" + day.getDate(), count: 10};
+            + (day.getMonth() + 1) + "-" + day.getDate(), count: 100};
             client.get("search/tweets", q, function (err, data) {
                 console.log("start: " + counter);
                 if (data.statuses.length != 0) {

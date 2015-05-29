@@ -21,7 +21,7 @@ router.get('/visitor', function(req, res, next) {
         day = new Date();
         day.setDate(day.getDate() - query.day);
 
-        var q = {count: 5, q: "since:" + day.getFullYear() + "-0" + (day.getMonth() + 1) + "-" +
+        var q = {count: 100, q: "since:" + day.getFullYear() + "-0" + (day.getMonth() + 1) + "-" +
         day.getDate() + " swarmapp " + loc};
         var users = [];
         var venues = {};

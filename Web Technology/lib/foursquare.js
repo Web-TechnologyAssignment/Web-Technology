@@ -19,10 +19,11 @@ var options = {
     headers: headers,
     qs: {
         oauth_token: config.access_token,
-        v: 20150527
+        v: 20150529
     }
 }
 
+// define get method for all get from foursquare api
 foursquare.get = function(path, params, callback) {
     options.url = 'https://api.foursquare.com/v2/' + path + "?";
     if (params.shortId) {

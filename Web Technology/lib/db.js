@@ -3,28 +3,35 @@
  */
 var db = {};
 var mysql = require('mysql');
-var init = false;
+
+// using connection pool to manage database connection
 var pool = mysql.createPool({
     host    :   'stusql.dcs.shef.ac.uk',
     user    :   'acp14xw',
     password:   '7f2a6ead',
     database:   'acp14xw'
 });
+
+// all sql queries are executed by this function
 db.query = function (query, callback) {
     pool.getConnection(function(err, connection) {
         connection.query(query, function(err, rows) {
             if (err) {
                 console.log(err);
             } else {
-                callback(rows);
+                if (callback) {
+                    callback(rows);
+                }
             }
         });
         connection.release();
     });
 };
 
+// store the information of users in database
 db.storeUsers = function(users) {
     if (users != null && users.length != 0) {
+        // if the screen name is the same, then overwrite the data
         var prefix = 'INSERT INTO user(screenName,userName,location,photo,text) VALUES ';
         var suffix = ' ON DUPLICATE KEY UPDATE userName = VALUES(userName),screenName = VALUES(screenName), ' +
             'location = VALUES(location), photo = VALUES(photo), text = VALUES(text);';
@@ -38,14 +45,15 @@ db.storeUsers = function(users) {
             }
         }
         var query = prefix + q + suffix;
-        console.log('Query: ');
         console.log(query);
         db.query(query);
     }
 }
 
+// store venues with the users who visited the veneus
 db.storeVenues = function (venues, user) {
     if (venues && user) {
+        // inser venues and users first
         var insertUser = 'INSERT INTO user(screenName,userName,location,photo,text) VALUES ' +
             '("' + user.screen_name + '","' + user.name + '","' + user.location + '","' +
             user.profile_image_url + '","' + user.description + '")' +
@@ -68,12 +76,15 @@ db.storeVenues = function (venues, user) {
         }
         console.log(prefix + q + suffix);
         db.query(prefix + q + suffix);
+
+        // insert visit record
         prefix = 'INSERT INTO visit(venueId,screenName) VALUES ';
         suffix = ' ON DUPLICATE KEY UPDATE venueId = VALUES(venueId),screenName = VALUES(screenName);';
         db.query(prefix + qVisit + suffix);
     }
 };
 
+// store venues with the users who visited the veneus
 db.storeVenuesWithUser = function (venues) {
     console.log(venues.users);
     for (var i in venues.venues) {
