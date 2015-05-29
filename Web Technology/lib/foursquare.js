@@ -24,11 +24,14 @@ var options = {
 }
 
 foursquare.get = function(path, params, callback) {
-    options.url = 'https://api.foursquare.com/v2/' + path;
+    options.url = 'https://api.foursquare.com/v2/' + path + "?";
     if (params.shortId) {
         options.qs['shortId'] = params.shortId;
     }
-
+    for (var i in params) {
+        options.url += i + "=" + params[i] + "&";
+    }
+    console.log(options.url);
     request(options, function (error, response, body){
         callback(error, response, body, params);
     });

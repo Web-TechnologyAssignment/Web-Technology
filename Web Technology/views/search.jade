@@ -1,0 +1,15 @@
+extends layout
+block content
+   h1= title
+   p Welcome to  #{title}
+   if venues
+      table(style="width:100%",border=1)
+         tr
+            td name
+            td categories
+            td address
+         for venue in venues
+            tr
+               td= venue.name
+               td= venue.categories
+               td= venue.address

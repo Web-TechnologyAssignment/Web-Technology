@@ -49,6 +49,11 @@ router.get('/foursquare', function(req, res, next) {
                                     for (var i in venue.categories) {
                                         categories += venue.categories[i].name;
                                     }
+                                    if (!loc.formattedAddress) {
+                                        loc.formattedAddress = "";
+                                    } else {
+                                        loc.formattedAddress = loc.formattedAddress.toString();
+                                    }
                                     if (photos.length != null && photos.length != 0) {
                                         photos = photos[0].items;
                                         photos = photos[0].prefix + "100" + photos[0].suffix;
