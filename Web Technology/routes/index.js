@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var app = express();
-var _ = require("underscore");
 
 // create twit client
 var twit = require("twit");

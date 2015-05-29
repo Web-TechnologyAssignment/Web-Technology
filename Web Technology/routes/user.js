@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var count = require("../lib/count");
-var _ = require("underscore");
 var db = require("../lib/db");
 // create twit client
 var twit = require("twit");

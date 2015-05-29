@@ -31,7 +31,7 @@ count.commonKeywords = function(param, num) {
         // if only have one text, then all every keyword is common
         for (var key in param[0].words) {
             var isCommon = true;
-            var sum = param[0].words[key];
+            var sum = 0;
             for (var i = 0; i < param.length; i++) {
                 var temp = param[i].words[key];
                 if (temp == null) {
