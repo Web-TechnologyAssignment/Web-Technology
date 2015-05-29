@@ -3,7 +3,7 @@ extends layout
 block content
     h1= title
     p Welcome to #{title}
-    form(name="search", action="/",method="GET", onsubmit="return validateForm();")
+    form(name="search", action="/",method="GET")
         p search :
             = " "
             input(type="text",name="query",required)
@@ -42,12 +42,4 @@ block content
                 inputField.setAttribute("disabled", "true");
             }
 
-        }
-        function validateForm() {
-            var x = document.forms["search"][query];
-            if (x == null || x == "") {
-                alert("invalid input value");
-                return false;
-            }
-            return false;
         }
