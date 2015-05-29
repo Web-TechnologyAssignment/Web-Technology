@@ -1,14 +1,8 @@
-
 var express = require('express'),
 router  = express.Router();
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
-    host    :   'stusql.dcs.shef.ac.uk',
-    user    :   'acp14xw',
-    password:   '7f2a6ead',
-    database:   'acp14xw'
-});
+var db = require('../lib/db');
 var init = false;
 var query = function (query, callback) {
     if (!init) {
@@ -23,47 +17,38 @@ var query = function (query, callback) {
         console.log(rows);
     };
 };
-/* GET a username*/
-router.get('/queryInterface', function(req, res, next) {
-    console.log(req.query);
-    req.query.usernames,function(users)
 
-    var query= 'SELECT * FROM user inner join visit ON user.screenName = visit.screenName WHERE userName LIKE "' + usr +
-                '%"' + 'OR id LIKE "%"';
-    connection.query(query,function(err, rows)
-    {
-        console.log(rows);
-        if (err)
-            console.log(err);
 
-        res.render('queryInterface', {title: "Database query"});
+router.get('/queryInterface.html', function(req, res, next) {
+    var query = req.query;
+    var sql = "";
+    if (query) {
+        if (query.select == "venue") {
+            sql = "SELECT * FROM venue A LEFT JOIN (visit B INNER JOIN user C) ON" +
+                " A.venueId = B.venueId AND B.screenName = C.screenName " +
+                "WHERE A.venueName LIKE '%" + query.input + "%';";
+        } else if (query.select == "username") {
+            sql = "SELECT * FROM (venue A INNER JOIN visit B) RIGHT JOIN user C ON " +
+                "A.venueId = B.venueId AND B.screenName = C.screenName " +
+                "WHERE C.userName LIKE '%" + query.input + "%';";
+        } else if (query.select == "userID") {
+            sql = "SELECT * FROM (venue A INNER JOIN visit B) RIGHT JOIN user C ON " +
+                "A.venueId = B.venueId AND B.screenName = C.screenName " +
+                "WHERE C.screenName LIKE '%" + query.input + "%';";
+        }
+        console.log(sql);
+        db.query(sql, function (rows) {
+            console.log(query.select);
+           console.log(rows);
+            console.log(query.select);
+            res.render('queryInterface', {title: "Database Query", results: rows, select: query.select});
+        });
+
+    } else {
+        res.render('queryInterface', {title: "Database Query"});
+    }
+
 });
-};
-/* GET a user id*/
-router.get('/queryInterface', function(req, res, next) {
-    console.log(req.query);
 
-    var query= 'SELECT * FROM user inner join visit ON user.screenName = visit.screenName WHERE userName LIKE "' + usr +
-               '%"' + 'OR id LIKE "%"';
-    connection.query(query,function(err, rows)
-    {
-        if (err)
-            console.log(err);
-
-        res.render('queryInterface', {title: "Database query"});
-}
-
-/* Get users names who visited a particular venue from database*/
-router.get('/queryInterface', function(req, res, next) {
-    var query= 'select screenName from location join venue on (user_venues.venue_id = venues.venueId)where name = "'+venue+'"';
-    connection.query('select user_id from user_venues join venues on (user_venues.venue_id = venues.venue_id)where name = "'+venue+'"',function(err, rows)
-    {
-        if (err)
-            console.log(err)
-        callback(rows);
-        //console.log(rows);
-    });
-    res.render('queryInterface', {title: "Database query"});
-});
 module.exports = router;
 

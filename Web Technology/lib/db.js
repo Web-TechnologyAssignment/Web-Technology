@@ -15,6 +15,8 @@ db.query = function (query, callback) {
         connection.query(query, function(err, rows) {
             if (err) {
                 console.log(err);
+            } else {
+                callback(rows);
             }
         });
         connection.release();

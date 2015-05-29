@@ -1,20 +1,39 @@
 extends layout
 block content
-   h1= title
-   p Welcome to  #{title}
-   form(name="search", action="/queryInterface",method="GET")
-      p
-         | Screen names :
-         = " "
-         input(type="text",name="screen_names")
-      p
-         | How many keywords?
-         = " "
-         input(type="text",name="num_of_keywords")
-      p
-         | How many days?
-         = " "
-         input(type="text",name="num_of_days")
-         p (5 days default)
-      input(type="submit",value="submit")
-      br
+    h1= title
+    p Welcome to  #{title}
+    form(name="search", action="/queryInterface.html",method="GET")
+        p
+            | Search
+            = " "
+            select(name="select")
+                option(value="username") User name
+                option(value="userID") User ID
+                option(value="venue") Venue
+            = " "
+            input(type="text",name="input")
+        input(type="submit",value="submit")
+        br
+        br
+
+    if results
+        if results.length == 0
+            h2 No result found
+        else
+            table(style="width:100%",border=1)
+                tr
+                    td
+                    td name
+                    td screen name
+                    td location
+                    td description
+                    td visit
+                for result in results
+                    tr
+                        td
+                            img(src=result.photo,style="width:100px;height:100px")
+                        td= result.userName
+                        td= result.screenName
+                        td= result.location
+                        td= result.text
+                        td= result.venueName
