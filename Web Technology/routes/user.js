@@ -17,25 +17,24 @@ var counter = 0;
 var max_length = 0;
 /* GET users listing. */
 router.get('/user', function(req, res, next) {
-
-    if (req.query.screen_names == null || req.query.screen_name == "") {
+    var query = req.query;
+    if (query.screen_names == null || query.screen_name == "") {
         console.log("empty");
         res.render('user', {title: 'Search Twitter User'});
     } else {
-        var num_of_days = req.query.num_of_days;
-        var num_of_keywords = req.query.num_of_keywords;
-        var screen_names = req.query.screen_names;
+        var num_of_keywords = query.num_of_keywords;
+        var screen_names = query.screen_names;
         var day = new Date();
         screen_names = screen_names.split(",");
-        day.setDate(day.getDate() - num_of_days);
+        day.setDate(day.getDate() - query.num_of_days);
 
         map = [];
         counter = 0;
         max_length = screen_names.length;
         for (var name_index in screen_names) {
-            var query = {q: "from:" + screen_names[name_index] + " since:" + day.getFullYear() + "-0"
+            var q = {q: "from:" + screen_names[name_index] + " since:" + day.getFullYear() + "-0"
             + (day.getMonth() + 1) + "-" + day.getDate(), count: 10};
-            client.get("search/tweets", query, function (err, data) {
+            client.get("search/tweets", q, function (err, data) {
                 console.log("start: " + counter);
                 if (data.statuses.length != 0) {
                     users = [];
@@ -59,12 +58,12 @@ router.get('/user', function(req, res, next) {
                 }
                 counter++;
                 if (counter == max_length) {
-                    var temp = _.extend({title: 'Search Twitter User with new data'},{stats: count.commonKeywords(map, num_of_keywords)});
-                    console.log(temp.stats);
+                    var temp = {title: 'Search Twitter User with new data',stats: count.commonKeywords(map, num_of_keywords)};
+                    console.log(temp.stats[temp.stats.length - 1]);
                     res.render('user', temp);
                 }
             });
-            console.log(query);
+            console.log(q);
         }
     }
 });

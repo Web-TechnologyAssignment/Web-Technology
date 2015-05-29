@@ -18,7 +18,6 @@ var user;
 router.get('/foursquare', function(req, res, next) {
     var query = req.query;
     if (query.name == null || query.name.length == 0) {
-        console.log(query.name);
         res.render('foursquare', {title: 'Search FourSquare!'});
     } else {
         var day = new Date();

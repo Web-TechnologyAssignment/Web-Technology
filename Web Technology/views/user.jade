@@ -7,29 +7,36 @@ block content
         p
             | Screen names :
             = " "
-            input(type="text",name="screen_names")
+            input(type="text",name="screen_names",required)
         p
             | How many keywords?
             = " "
-            input(type="text",name="num_of_keywords")
+            input(type="text",name="num_of_keywords",required)
         p
             | How many days?
             = " "
-            input(type="text",name="num_of_days")
+            input(type="text",name="num_of_days",required)
             p (5 days default)
         input(type="submit",value="submit")
         br
 
         if stats
-            table(style="width:100%",border=1)
-                tr
-                    td
-                    for user in stats
-                        td= user.username
-                    td Total
-                for word in stats.total
+            if stats.length == 0
+                h2 No result found
+            else
+                table(style="width:100%",border=1)
                     tr
-                        td= word.key
+                        td
                         for user in stats
-                            td= user.words[word.key]
-                        td= word.total
+                            if user.username
+                                td= user.username
+                        td Total
+                    for word in stats[stats.length - 1].total
+                        tr
+                            td= word.key
+                            for user in stats
+                                if user.username
+                                    td= user.words[word.key]
+                                else
+                                    td= word.total
+

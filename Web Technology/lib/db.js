@@ -3,26 +3,22 @@
  */
 var db = {};
 var mysql = require('mysql');
-
-var connection = mysql.createConnection({
+var init = false;
+var pool = mysql.createPool({
     host    :   'stusql.dcs.shef.ac.uk',
     user    :   'acp14xw',
     password:   '7f2a6ead',
     database:   'acp14xw'
 });
-var init = false;
 db.query = function (query, callback) {
-    if (!init) {
-        connection.connect();
-        init = true;
-    }
-    connection.query(query), function(err, rows, fields) {
-        if (err) {
-            console.log(err);
-            //throw err;
-        }
-        console.log(rows);
-    };
+    pool.getConnection(function(err, connection) {
+        connection.query(query, function(err, rows) {
+            if (err) {
+                console.log(err);
+            }
+        });
+        connection.release();
+    });
 };
 
 db.storeUsers = function(users) {
