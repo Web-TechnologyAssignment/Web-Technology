@@ -1,0 +1,34 @@
+extends layout
+block content
+    h1= title
+    p Welcome to  #{title}
+    form(name="search", action="/additional",method="GET")
+        p
+            | Search
+            = " "
+            select(name="select")
+                option(value="location") Location
+                option(value="coordinates") Coordinates
+                option(value="venue") VenueID
+            = " "
+            input(type="text",name="loc",required)
+        input(type="submit",value="submit")
+    br
+    if places
+        table(style="width:100%",border=1)
+            tr
+                td name
+                td address
+                td type
+                td
+            for place in places
+                tr
+                    //td
+                    //    //img(src=user.photo,style="width:100px;height:100px")
+                    td
+                        = place.name
+                    td= place.full_name + ", " + place.country
+                    td= place.place_type
+                    td
+                        a(href="./additional/search?centre=" + place.centre)
+                            = "Check out"

@@ -6,30 +6,33 @@ block content
         p
             | Search by Username
             = " "
-            input(type="text",name="name")
+            input(type="text",name="name",required)
         p
             | How many days?
             = " "
-            input(type="text",name="day")
+            input(type="text",name="day",required)
         input(type="submit",value="submit")
     br
 
     if venues
-        table(style="width:100%",border=1)
-            tr
-                td
-                td name
-                td categories
-                td address
-            for venue in venues
+        if venues.length == 0
+            h2 No result found
+        else
+            table(style="width:100%",border=1)
                 tr
                     td
-                        img(src=venue.photo,style="width:100px;height:100px")
-                    td
-                        a(href=venue.url)
-                            = venue.name
-                    td= venue.categories
-                    td= venue.address
+                    td name
+                    td categories
+                    td address
+                for venue in venues
+                    tr
+                        td
+                            img(src=venue.photo,style="width:100px;height:100px")
+                        td
+                            a(href=venue.url)
+                                = venue.name
+                        td= venue.categories
+                        td= venue.address
 
 
 

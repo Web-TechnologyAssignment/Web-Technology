@@ -18,7 +18,6 @@ var user;
 router.get('/foursquare', function(req, res, next) {
     var query = req.query;
     if (query.name == null || query.name.length == 0) {
-        console.log(query.name);
         res.render('foursquare', {title: 'Search FourSquare!'});
     } else {
         var day = new Date();
@@ -48,6 +47,11 @@ router.get('/foursquare', function(req, res, next) {
                                     var categories = "";
                                     for (var i in venue.categories) {
                                         categories += venue.categories[i].name;
+                                    }
+                                    if (!loc.formattedAddress) {
+                                        loc.formattedAddress = "";
+                                    } else {
+                                        loc.formattedAddress = loc.formattedAddress.toString();
                                     }
                                     if (photos.length != null && photos.length != 0) {
                                         photos = photos[0].items;

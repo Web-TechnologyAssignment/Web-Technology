@@ -10,7 +10,12 @@ var user_routes = require('./routes/user');
 var demo_routes = require('./routes/demo');
 var foursquare_routes = require('./routes/foursquare');
 var visitor_routes = require('./routes/visitor');
+<<<<<<< HEAD
 var database_routes = require('./routes/database');
+=======
+var additional_routes = require('./routes/additional');
+
+>>>>>>> ebcae9a197c8b40084eaaf5f537f097f07b5b685
 var app = express();
 
 // view engine setup
@@ -30,7 +35,12 @@ app.use('/', user_routes);
 app.use('/', demo_routes);
 app.use('/', foursquare_routes);
 app.use('/', visitor_routes);
+<<<<<<< HEAD
 app.use('/', database_routes);
+=======
+app.use('/', additional_routes);
+
+>>>>>>> ebcae9a197c8b40084eaaf5f537f097f07b5b685
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
