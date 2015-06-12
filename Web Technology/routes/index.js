@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
     var twitQuery = req.query.query;
     var geoloc = req.query.geoloc;
     if (twitQuery == null) {
-        res.render('index', {title: 'Search Twitter', "tweets": []});
+        res.render('index', {title: 'Search Twitter'});
     } else {
         var q = {};
         if (geoloc != null) {
