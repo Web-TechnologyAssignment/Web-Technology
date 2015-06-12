@@ -23,7 +23,7 @@ router.get('/foursquare', function(req, res, next) {
         var day = new Date();
         day.setDate(day.getDate() - query.day);
         var q = {q: "from:" + query.name + " swarmapp" + " since:" + day.getFullYear() + "-0"
-        + (day.getMonth() + 1) + "-" + day.getDate() , count: 15};
+        + (day.getMonth() + 1) + "-" + day.getDate() , count: 100};
         console.log(q);
         client.get("search/tweets", q, function (err, data) {
             counter = 0;
